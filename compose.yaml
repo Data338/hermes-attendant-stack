@@ -1,0 +1,21 @@
+services:
+  attendant:
+    build: .
+    image: attendant:dev
+    container_name: attendant
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - attendant-state:/opt/data
+    environment:
+      - HERMES_HOME=/opt/data
+      - WHATSAPP_ENABLED=true
+      - WHATSAPP_MODE=bot
+      - WHATSAPP_ALLOWED_USERS=*
+      - HERMES_GATEWAY_BUSY_ACK_ENABLED=false
+    env_file:
+      - ./provider.env
+    command: ["hermes", "gateway", "run"]
+
+volumes:
+  attendant-state:

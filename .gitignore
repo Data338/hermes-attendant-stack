@@ -1,0 +1,12 @@
+# secrets & state — NEVER commit
+provider.env
+.env
+*.db
+*.db-shm
+*.db-wal
+whatsapp/
+sessions/
+kanban.db
+*.png
+.DS_Store
+__pycache__/

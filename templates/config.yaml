@@ -1,0 +1,74 @@
+model:
+  default: "{{MODEL_ID}}"
+  provider: "{{PROVIDER_NAME}}"
+  api_mode: "chat_completions"
+
+providers:
+  "{{PROVIDER_NAME}}":
+    base_url: "{{PROVIDER_BASE_URL}}"
+    key_env: "{{PROVIDER_KEY_ENV}}"
+    api_mode: "chat_completions"
+    request_timeout_seconds: 600
+    stale_timeout_seconds: 1800
+
+agent:
+  name: "{{AGENT_NAME}}"
+  max_turns: 100
+  disabled_toolsets:
+    # Chat-only attendant: no shell, no files, no web. Least privilege.
+    - browser
+    - code_execution
+    - computer_use
+    - delegation
+    - discord
+    - file
+    - image_gen
+    - kanban
+    - project
+    - search
+    - session_search
+    - skills
+    - spotify
+    - stt
+    - terminal
+    - todo
+    - tts
+    - video
+    - video_gen
+    - vision
+    - web
+
+mcp_servers:
+  # Example: plug your lookup/quote backend here. Credentials live in
+  # provider.env (see provider.env.example) — NEVER in this file.
+  # "{{SERVER_NICK}}":
+  #   command: "node"
+  #   args: ["/opt/backend/src/index.mjs"]
+  #   env:
+  #     BACKEND_USER: "${BACKEND_USER}"
+  #     BACKEND_PASS: "${BACKEND_PASS}"
+
+platform_toolsets:
+  whatsapp:
+    - mcp-{{SERVER_NICK}}
+
+display:
+  busy_input_mode: queue
+  interim_assistant_messages: false
+  show_reasoning: false
+  show_commentary: false
+  background_process_notifications: off
+  memory_notifications: off
+  platforms:
+    whatsapp:
+      tool_progress: off
+      typing_indicator: false
+
+onboarding:
+  profile_build: "off"
+
+gateway:
+  filter_silence_narration: true
+
+cron:
+  wrap_response: false
