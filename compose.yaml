@@ -9,9 +9,25 @@ services:
       - attendant-state:/opt/data
     environment:
       - HERMES_HOME=/opt/data
+      # --- Mode A: Baileys bridge (unofficial, QR pairing) ---
       - WHATSAPP_ENABLED=true
       - WHATSAPP_MODE=bot
       - WHATSAPP_ALLOWED_USERS=*
+      # --- Mode B: official WhatsApp Cloud API (Graph) ---
+      # Set WHATSAPP_ENABLED=false when Cloud is active, otherwise BOTH adapters
+      # try to own the number. Values live in provider.env (never commit).
+      # WHATSAPP_CLOUD_VERIFY_TOKEN
+      # WHATSAPP_CLOUD_WEBHOOK_PORT=8090
+      # WHATSAPP_CLOUD_WEBHOOK_PATH=/whatsapp/webhook
+      # WHATSAPP_CLOUD_PHONE_NUMBER_ID
+      # WHATSAPP_CLOUD_APP_ID
+      # WHATSAPP_CLOUD_APP_SECRET
+      # WHATSAPP_CLOUD_WABA_ID
+      # WHATSAPP_CLOUD_ACCESS_TOKEN
+      # Allow-all opt-in REQUIRED for Cloud: the adapter ignores the shared
+      # WHATSAPP_ALLOWED_USERS and silently drops DMs unless either this is
+      # "true" or WHATSAPP_CLOUD_ALLOWED_USERS is set to a real allowlist.
+      # WHATSAPP_CLOUD_ALLOW_ALL_USERS=true
       - HERMES_GATEWAY_BUSY_ACK_ENABLED=false
     env_file:
       - ./provider.env

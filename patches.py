@@ -10,8 +10,10 @@
 3. whatsapp bridge: swap fetchLatestBaileysVersion (fetches from GitHub, hits
    429 rate limits) for fetchLatestWaWebVersion (fetches web.whatsapp.com/sw.js),
    removing the GitHub dependency from the WhatsApp connection.
-4. notices: suppress ALL internal Hermes notices on WhatsApp
-   (_deliver_platform_notice becomes a no-op on that platform) — contacts on
+4. notices: suppress ALL internal Hermes notices on WhatsApp — both the Baileys
+   bridge (Platform.WHATSAPP) and the official Cloud API
+   (Platform.WHATSAPP_CLOUD, a distinct enum value) — so
+   _deliver_platform_notice becomes a no-op on those platforms. Contacts on
    the allowlist are served by the agent, and no stock message (sethome,
    credits/usage, whitelist) should ever reach them.
 """
@@ -71,7 +73,9 @@ new4 = '''    async def _deliver_platform_notice(self, source, content: str) -> 
         """Deliver a setup/operational notice using platform-specific privacy rules."""
         # attendant: suppress ALL default Hermes notices on WhatsApp (sethome,
         # credits/usage band pushes, etc.) — contacts only see the agent reply.
-        if getattr(source, "platform", None) == Platform.WHATSAPP:
+        # Covers both the Baileys bridge (WHATSAPP) and the official Cloud API
+        # (WHATSAPP_CLOUD, a distinct enum value).
+        if getattr(source, "platform", None) in (Platform.WHATSAPP, Platform.WHATSAPP_CLOUD):
             logger.debug(
                 "Suppressing Hermes platform notice on WhatsApp: %s",
                 str(content)[:120],
@@ -94,4 +98,4 @@ assert n3 == 2, "bridge patch anchor count=%d (expected 2)" % n3
 bs = bs.replace(old3, new3)
 open(bp, "w", encoding="utf-8").write(bs)
 
-print("patches ok: onboarding intro off + pdf auto-extract + bridge version via web.whatsapp.com + no Hermes notices on WhatsApp")
+print("patches ok: onboarding intro off + pdf auto-extract + bridge version via web.whatsapp.com + no Hermes notices on WhatsApp/Cloud API")
